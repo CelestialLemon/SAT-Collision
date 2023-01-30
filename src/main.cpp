@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <polygon.h>
 #include <SAT.h>
+#include <iostream>
 
 const int N_POINTS_RED = 5, N_POINTS_BLUE = 6;
 const float MOVE_SPEED = 250.0f;
@@ -9,7 +10,22 @@ const float ROTATE_SPEED = 80.0f;
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(1280, 720), "Separating Axis Theorem");    
+    sf::RenderWindow window(sf::VideoMode(1280, 720), "Separating Axis Theorem"); 
+
+    sf::Font bahnscrift;
+    if(!bahnscrift.loadFromFile("res/BAHNSCHRIFT 1.TTF")) {
+        std::cout << "error loading font"; 
+    }
+    sf::Text text;
+    text.setFont(bahnscrift);
+    // set the string to display
+    text.setString("Collision");
+    text.setCharacterSize(24); 
+    text.setPosition(sf::Vector2f(620, 600));
+    text.setFillColor(sf::Color::Green);
+
+// inside the main loop, between window.clear() and window.display()
+    window.draw(text);   
 
     sf::ConvexShape red(N_POINTS_RED), blue(N_POINTS_BLUE);
 
@@ -61,8 +77,12 @@ int main()
 
         red.setPosition(redPosition);
 
-        if(SATPolygonCollision(red, blue, window))
-            printf("Colliding");
+        sf::CircleShape collisionSignal(50.0f, 10);
+        collisionSignal.setFillColor(sf::Color::Green);
+        collisionSignal.setOrigin(sf::Vector2f(25.0f, 25.0f));
+
+        if(SATPolygonCollision(red, blue))
+            window.draw(text);
 
         window.draw(red);
         window.draw(blue);
@@ -70,4 +90,7 @@ int main()
     }
 
     return 0;
+
+    //----------------------------------------------------------------------------------------
+
 }
